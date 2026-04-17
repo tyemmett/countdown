@@ -40,33 +40,15 @@
   <script>
     const hoursEl = document.getElementById("hours");
 
-    function getChicagoTimeOffset(date) {
-      const formatter = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Chicago",
-        timeZoneName: "shortOffset"
-      });
-
-      const parts = formatter.formatToParts(date);
-      const offset = parts.find(p => p.type === "timeZoneName").value;
-      return offset.replace("GMT", "");
-    }
-
-    function getTargetDate() {
-      const probe = new Date("2026-04-25T12:00:00Z");
-      const offset = getChicagoTimeOffset(probe);
-      return new Date(`2026-04-25T17:00:00${offset}`);
-    }
+    // April 25, 2026 at 5:00 PM in America/Chicago
+    // On this date Chicago is on CDT, which is UTC-5
+    const target = new Date("2026-04-25T22:00:00Z");
 
     function update() {
       const now = new Date();
-      const target = getTargetDate();
       const diff = (target - now) / (1000 * 60 * 60);
 
-      if (diff <= 0) {
-        hoursEl.textContent = "0.00";
-      } else {
-        hoursEl.textContent = diff.toFixed(2);
-      }
+      hoursEl.textContent = diff <= 0 ? "0.00" : diff.toFixed(2);
     }
 
     update();
