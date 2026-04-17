@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hours Until April 25, 5 PM CST/CDT</title>
+  <title>Hours Until April 25</title>
   <style>
     body {
       margin: 0;
@@ -13,85 +13,64 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      height: 100vh;
     }
 
-    .card {
-      background: white;
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    .container {
       text-align: center;
-      width: min(90vw, 420px);
-    }
-
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 12px;
-    }
-
-    .target {
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 24px;
     }
 
     .hours {
-      font-size: 3rem;
+      font-size: 4rem;
       font-weight: bold;
-      margin-bottom: 8px;
     }
 
     .label {
-      font-size: 1rem;
       color: #666;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Time Until April 25 at 5:00 PM Central</h1>
-    <div class="target">Target: April 25, 2026 at 5:00 PM America/Chicago</div>
+  <div class="container">
     <div id="hours" class="hours">--</div>
-    <div class="label">hours remaining</div>
+    <div class="label">hours until April 25, 5:00 PM (Central)</div>
   </div>
 
   <script>
-    const hoursEl = document.getElementById('hours');
+    const hoursEl = document.getElementById("hours");
 
-    function getChicagoOffset(date) {
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Chicago',
-        timeZoneName: 'shortOffset'
+    function getChicagoTimeOffset(date) {
+      const formatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        timeZoneName: "shortOffset"
       });
 
       const parts = formatter.formatToParts(date);
-      const offsetPart = parts.find(part => part.type === 'timeZoneName');
-      return offsetPart ? offsetPart.value.replace('GMT', '') : '-05:00';
+      const offset = parts.find(p => p.type === "timeZoneName").value;
+      return offset.replace("GMT", "");
     }
 
     function getTargetDate() {
-      const probeDate = new Date('2026-04-25T12:00:00Z');
-      const offset = getChicagoOffset(probeDate);
+      const probe = new Date("2026-04-25T12:00:00Z");
+      const offset = getChicagoTimeOffset(probe);
       return new Date(`2026-04-25T17:00:00${offset}`);
     }
 
-    function updateCountdown() {
+    function update() {
       const now = new Date();
       const target = getTargetDate();
-      const diffMs = target - now;
-      const diffHours = diffMs / (1000 * 60 * 60);
+      const diff = (target - now) / (1000 * 60 * 60);
 
-      if (diffMs <= 0) {
-        hoursEl.textContent = '0.00';
-        return;
+      if (diff <= 0) {
+        hoursEl.textContent = "0.00";
+      } else {
+        hoursEl.textContent = diff.toFixed(2);
       }
-
-      hoursEl.textContent = diffHours.toFixed(2);
     }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    update();
+    setInterval(update, 1000);
   </script>
 </body>
 </html>
